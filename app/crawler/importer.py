@@ -1,16 +1,13 @@
 import json
 import re
-import time
 
-import redis
-from playwright.sync_api import sync_playwright
+from app.service.redis_service import redis_manager
 
 # Declare a global variable to hold the data
 locale_stations_data = None
 main_page_content = None
 
 JAVASCRIPT_FILE_NAME = 'main.'
-r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 
 def fix_json(data):
@@ -50,10 +47,12 @@ def clean_data(match):
 def save_to_redis(decoded_data):
     for station in decoded_data:
         key = f"city:{station['code']}"
-        r.set(key, json.dumps(station))
+        redis_manager.put(key, json.dumps(station))
+        # r.set(key, json.dumps(station))
 
-    keys = r.keys('city:*')
-    cities = [json.loads(r.get(key)) for key in
+    # keys = r.keys('city:*')
+    keys = redis_manager.keys('city:*')
+    cities = [json.loads(redis_manager.get(key)) for key in
               keys]  # Using r.get and json.loads to correctly retrieve and deserialize the data
     print(f"Data from redis:{cities}")
 
@@ -63,16 +62,3 @@ def initialize_playwright(playwright):
     context = browser.new_context()
     context.route('**/*', handle_js_route)
     return context.new_page()
-
-
-def main():
-    global playwright
-    with sync_playwright() as playwright:
-        page = initialize_playwright(playwright)
-        page.goto("https://eticket.railway.uz/en/home", timeout=90000)
-        stations = extract_stations_info(main_page_content)
-        save_to_redis(stations)
-
-
-if __name__ == "__main__":
-    main()
