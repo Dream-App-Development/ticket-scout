@@ -5,13 +5,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from mangum import Mangum
-from app.api.api_v1.endpoints import ticket
+from app.api.api_v1.endpoints import ticket, test
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
 
 app = FastAPI()
 app.include_router(ticket.router)
+app.include_router(test.router)
 
 lambda_handler = Mangum(app)
 
