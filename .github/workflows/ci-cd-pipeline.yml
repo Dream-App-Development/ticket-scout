@@ -37,6 +37,8 @@ jobs:
     - name: Make deploy.sh executable
       run: |
         chmod +x ./deploy.sh
+        chmod +x ./_run_terraform.sh
+        chmod +x ./_config.sh
 
     - name: Deploy to Staging
       if: github.ref == 'refs/heads/staging'
