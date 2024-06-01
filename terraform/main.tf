@@ -9,12 +9,12 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-southeast-1"
 }
 
 provider "aws" {
-  alias  = "useast1"
-  region = "us-east-1"
+  alias  = "apsoutheast1"
+  region = "ap-southeast-1"
 }
 
 data "aws_region" "current" {}

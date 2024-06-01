@@ -19,7 +19,7 @@ terraform {
   backend "s3" {
     bucket = "${TERRAFORM_STATE_BUCKET}"
     key    = "terraform-${TERRAFORM_STATE_IDENT}.tfstate"
-    region = "us-east-1"
+    region = "ap-southeast-1"
   }
 }
 EOF
