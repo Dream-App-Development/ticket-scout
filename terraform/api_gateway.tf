@@ -197,8 +197,113 @@
 variable "api_stage_name" {
   type = string
 }
+#
+# # 1. Create the API Gateway REST API
+# resource "aws_api_gateway_rest_api" "api" {
+#   name        = "${var.app_ident}_api"
+#   description = "API for ${var.app_ident} application"
+#   endpoint_configuration {
+#     types = ["REGIONAL"]
+#   }
+# }
+#
+# # 2. Define a catch-all (proxy) resource for the API Gateway. This will forward all paths to the Lambda.
+# resource "aws_api_gateway_resource" "proxy" {
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+#   path_part   = "{proxy+}"
+# }
+#
+# # 3. Allow any HTTP method on the catch-all resource.
+# resource "aws_api_gateway_method" "proxy_any" {
+#   rest_api_id   = aws_api_gateway_rest_api.api.id
+#   resource_id   = aws_api_gateway_resource.proxy.id
+#   http_method   = "ANY"
+#   authorization = "NONE"
+# }
+#
+# # 4. Set up the AWS Lambda proxy integration.
+# resource "aws_api_gateway_integration" "proxy_integration" {
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   resource_id = aws_api_gateway_resource.proxy.id
+#   http_method = aws_api_gateway_method.proxy_any.http_method
+#
+#   type                    = "AWS_PROXY"
+#   integration_http_method = "POST"
+#   uri                     = aws_lambda_function.lambda_function.invoke_arn
+# }
+#
+# # 5. Grant API Gateway permissions to invoke the Lambda function.
+# resource "aws_lambda_permission" "apigw" {
+#   statement_id  = "AllowAPIGatewayInvoke"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.lambda_function.function_name
+#   principal     = "apigateway.amazonaws.com"
+#
+#   source_arn = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*"
+# }
+#
+# # 6. Deploy the API to an API Gateway stage
+# resource "aws_api_gateway_deployment" "deployment" {
+#   depends_on = [aws_api_gateway_integration.proxy_integration]
+#
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   stage_name  = var.api_stage_name
+#
+#   variables = {
+#     deployment = "2"
+#   }
+#
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
+#
+# # The following is so the CORS works
+# resource "aws_api_gateway_method" "proxy_options" {
+#   rest_api_id   = aws_api_gateway_rest_api.api.id
+#   resource_id   = aws_api_gateway_resource.proxy.id
+#   http_method   = "OPTIONS"
+#   authorization = "NONE"
+# }
+#
+# resource "aws_api_gateway_method_response" "proxy_options_200" {
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   resource_id = aws_api_gateway_resource.proxy.id
+#   http_method = aws_api_gateway_method.proxy_options.http_method
+#   status_code = "200"
+#   response_parameters = {
+#     "method.response.header.Access-Control-Allow-Headers" = true,
+#     "method.response.header.Access-Control-Allow-Methods" = true,
+#     "method.response.header.Access-Control-Allow-Origin"  = true
+#   }
+# }
+#
+# resource "aws_api_gateway_integration" "proxy_options" {
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   resource_id = aws_api_gateway_resource.proxy.id
+#   http_method = aws_api_gateway_method.proxy_options.http_method
+#   type        = "MOCK"
+#
+#   request_templates = {
+#     "application/json" = "{\"statusCode\": 200}"
+#   }
+# }
+#
+# resource "aws_api_gateway_integration_response" "proxy_options_200" {
+#   rest_api_id = aws_api_gateway_rest_api.api.id
+#   resource_id = aws_api_gateway_resource.proxy.id
+#   http_method = aws_api_gateway_method.proxy_options.http_method
+#   status_code = aws_api_gateway_method_response.proxy_options_200.status_code
+#   response_parameters = {
+#     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+#     "method.response.header.Access-Control-Allow-Methods" = "'*'",
+#     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+#   }
+# }
 
-# 1. Create the API Gateway REST API
+
+
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.app_ident}_api"
   description = "API for ${var.app_ident} application"
@@ -207,14 +312,12 @@ resource "aws_api_gateway_rest_api" "api" {
   }
 }
 
-# 2. Define a catch-all (proxy) resource for the API Gateway. This will forward all paths to the Lambda.
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
   path_part   = "{proxy+}"
 }
 
-# 3. Allow any HTTP method on the catch-all resource.
 resource "aws_api_gateway_method" "proxy_any" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.proxy.id
@@ -222,7 +325,6 @@ resource "aws_api_gateway_method" "proxy_any" {
   authorization = "NONE"
 }
 
-# 4. Set up the AWS Lambda proxy integration.
 resource "aws_api_gateway_integration" "proxy_integration" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.proxy.id
@@ -233,7 +335,6 @@ resource "aws_api_gateway_integration" "proxy_integration" {
   uri                     = aws_lambda_function.lambda_function.invoke_arn
 }
 
-# 5. Grant API Gateway permissions to invoke the Lambda function.
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -243,23 +344,17 @@ resource "aws_lambda_permission" "apigw" {
   source_arn = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*"
 }
 
-# 6. Deploy the API to an API Gateway stage
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [aws_api_gateway_integration.proxy_integration]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = var.api_stage_name
 
-  variables = {
-    deployment = "2"
-  }
-
   lifecycle {
     create_before_destroy = true
   }
 }
 
-# The following is so the CORS works
 resource "aws_api_gateway_method" "proxy_options" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.proxy.id
