@@ -42,6 +42,7 @@ resource "aws_lambda_function" "lambda_function" {
   environment {
     variables = {
       ENVIRONMENT = var.environment
+      APP_IDENT = var.app_ident
     }
   }
 }
