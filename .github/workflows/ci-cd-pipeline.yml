@@ -43,9 +43,11 @@ jobs:
     - name: Deploy to Staging
       if: github.ref == 'refs/heads/staging'
       run: |
+        terraform init -reconfigure
         ENVIRONMENT=staging ./deploy.sh
 
     - name: Deploy to Production
       if: github.ref == 'refs/heads/production'
       run: |
+        terraform init -reconfigure
         ENVIRONMENT=prod ./deploy.sh
