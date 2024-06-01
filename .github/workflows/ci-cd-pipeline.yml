@@ -34,6 +34,10 @@ jobs:
         sudo chmod 775 /tmp/terraform
         sudo mv /tmp/terraform /usr/bin/
 
+    - name: Make deploy.sh executable
+      run: |
+        chmod +x ./deploy.sh
+
     - name: Deploy to Staging
       if: github.ref == 'refs/heads/staging'
       run: |
