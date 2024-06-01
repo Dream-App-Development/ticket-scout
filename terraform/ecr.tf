@@ -1,4 +1,9 @@
+data "aws_ecr_repository" "existing" {
+  name = "${var.app_ident}_repository"
+}
+
 resource "aws_ecr_repository" "ecr_repository" {
+  count = length(data.aws_ecr_repository.existing.id) == 0 ? 1 : 0
   name = "${var.app_ident}_repository"
 }
 

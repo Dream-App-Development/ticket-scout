@@ -24,7 +24,12 @@ resource "aws_lambda_function" "lambda_function" {
   }
 }
 
+data "aws_iam_role" "existing_lambda_exec" {
+  name = "${var.app_ident}_lambda_exec_role"
+}
+
 resource "aws_iam_role" "lambda_exec" {
+  count = length(data.aws_iam_role.existing_lambda_exec.name) == 0 ? 1 : 0
   name = "${var.app_ident}_lambda_exec_role"
 
   assume_role_policy = jsonencode({
