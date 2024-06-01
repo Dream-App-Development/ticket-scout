@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ${LAMBDA_TASK_ROOT}/app
 
 # Command to run the Lambda function
-CMD ["main.handler"]
+CMD ["app.app.lambda_handler"]
 
 
 # The code below for running in local machine
