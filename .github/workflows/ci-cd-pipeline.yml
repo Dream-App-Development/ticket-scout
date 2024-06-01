@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - staging
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-pip
+        pip install awscli
+        wget https://releases.hashicorp.com/terraform/1.5.5/terraform_1.5.5_linux_amd64.zip
+        unzip terraform_1.5.5_linux_amd64.zip -d /tmp
+        sudo chmod 775 /tmp/terraform
+        sudo mv /tmp/terraform /usr/bin/
+
+    - name: Deploy to Staging
+      if: github.ref == 'refs/heads/staging'
+      run: |
+        ENVIRONMENT=staging ./deploy.sh
+
+    - name: Deploy to Production
+      if: github.ref == 'refs/heads/production'
+      run: |
+        ENVIRONMENT=prod ./deploy.sh

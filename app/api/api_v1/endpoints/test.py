@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter
 
 router = APIRouter(
@@ -8,4 +10,4 @@ router = APIRouter(
 
 @router.get("/")
 def get():
-    return "Hello World"
+    return f"{os.getenv('APP_IDENT')} is working!"
