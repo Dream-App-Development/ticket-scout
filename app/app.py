@@ -15,6 +15,7 @@ app.include_router(ticket.router)
 app.include_router(test.router)
 
 lambda_handler = Mangum(app)
+# https://px82x2qsic.execute-api.ap-southeast-1.amazonaws.com/staging/
 
 # Enable Middleware
 app.add_middleware(GZipMiddleware, minimum_size=500)
