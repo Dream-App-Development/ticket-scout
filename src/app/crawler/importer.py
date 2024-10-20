@@ -1,7 +1,7 @@
 import json
 import re
 
-from app.service.redis_service import redis_manager
+from service.redis_service import redis_manager
 
 # Declare a global variable to hold the data
 locale_stations_data = None
@@ -28,11 +28,11 @@ def handle_js_route(route, request):
 
 
 def extract_stations_info(body):
-    js_content = body.decode('utf-8')
-    match = re.search(r'this\.localeStations\s*=\s*(.*?);', js_content)
+    # js_content = body.decode('utf-8')
+    match = re.search(r'this\.localeStations\s*=\s*(.*?);', body)
     if match:
+        print(f"Cleaned data: {clean_data(match)}")
         return clean_data(match)
-    # print(f"Cleaned data: {user_data}")
     else:
         print("this.localeStations not found in the JavaScript file.")
 

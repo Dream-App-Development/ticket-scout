@@ -1,6 +1,6 @@
-from app.celery import app
+from celery import app
 from playwright.sync_api import sync_playwright
-from app.crawler.importer import initialize_playwright
+from crawler.importer import initialize_playwright
 
 
 @app.task
