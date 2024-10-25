@@ -12,7 +12,7 @@ COPY requirements.txt ${LAMBDA_TASK_ROOT}
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
-COPY app ${LAMBDA_TASK_ROOT}/app
+COPY src/app ${LAMBDA_TASK_ROOT}/app
 
 # Command to run the Lambda function
 CMD ["app.app.lambda_handler"]

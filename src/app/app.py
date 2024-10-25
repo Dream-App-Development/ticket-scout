@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from mangum import Mangum
-from app.api.api_v1.endpoints import ticket, test
+from api.api_v1.endpoints import test
+from api.api_v1.endpoints import ticket
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
