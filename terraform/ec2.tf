@@ -1,5 +1,5 @@
 resource "aws_instance" "example" {
-  ami = "ami-0be48b687295f8bd6"  # Update with the appropriate AMI ID for your region
+  ami = "i-0d375bbd5ddb22172"  # Update with the appropriate AMI ID for your region
   instance_type = "t2.micro"
   subnet_id     = data.aws_subnets.subnets.ids[0]
 
