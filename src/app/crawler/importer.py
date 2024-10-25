@@ -28,10 +28,9 @@ def handle_js_route(route, request):
 
 
 def extract_stations_info(body):
-    # js_content = body.decode('utf-8')
     match = re.search(r'this\.localeStations\s*=\s*(.*?);', body)
     if match:
-        print(f"Cleaned data: {clean_data(match)}")
+        print(f"stations: {clean_data(match)}")
         return clean_data(match)
     else:
         print("this.localeStations not found in the JavaScript file.")
