@@ -6,7 +6,7 @@ export SRC=app
 
 # NOTE: The bucket terraform-state must already exist in the AWS account
 #       This should be defined on the command line for the best re-usability
-export TERRAFORM_STATE_BUCKET=ticketscout-terraform-state
+export TERRAFORM_STATE_BUCKET=ticket-scout-terraform-state
 # Terraform state identifier (must be unique) | allowed characters: a-zA-Z0-9-_
 export TERRAFORM_STATE_IDENT=ticket-scout-backend
 
