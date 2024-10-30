@@ -29,14 +29,14 @@ resource "aws_api_gateway_integration" "integration" {
   uri                     = aws_lambda_function.lambda_function.invoke_arn
 }
 
-# Add necessary permissions for API Gateway to invoke Lambda
-resource "aws_lambda_permission" "api_gateway_permission" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_function.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
-}
+## Add necessary permissions for API Gateway to invoke Lambda
+#resource "aws_lambda_permission" "api_gateway_permission" {
+#  statement_id  = "AllowAPIGatewayInvoke"
+#  action        = "lambda:InvokeFunction"
+#  function_name = aws_lambda_function.lambda_function.function_name
+#  principal     = "apigateway.amazonaws.com"
+#  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+#}
 
 # Deploy the API
 resource "aws_api_gateway_deployment" "deployment" {
