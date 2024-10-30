@@ -17,6 +17,7 @@ resource "aws_api_gateway_method" "method" {
   resource_id   = aws_api_gateway_resource.resource.id
   http_method   = "ANY"
   authorization = "NONE"
+  api_key_required = false
 }
 
 # Set up integration with Lambda
